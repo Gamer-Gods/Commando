@@ -13,6 +13,8 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include <string>
+#include "Vec2.h"
+#include "Tilemap.h"
 
 /*
 * Use SDL to open a window and render some sprites at given locations and scales
@@ -34,16 +36,10 @@ float enemySpawnDelay = 1.0f;
 float enemySpawnTimer = 0.0f;
 float enemyStartSpawnTimer = 1.0f;
 
+Tilemap map;
+
 namespace Fund
 {
-	//so getPosition() can return 2 values
-	struct Vec2
-	{
-		float x = 0;
-		float y = 0;
-	};
-
-
 	//declaring a struct or class declares a new type of object we can make. After this is declared, we can make Sprite variables that have all of the contained data fields, and functions
 	struct Sprite
 	{
@@ -372,6 +368,8 @@ void Load()
 {
 	//player textures
 	char* fileToLoad = "../Assets/textures/fighter.png";
+
+	map.LoadTextureForTile(Floor, "../Assets/textures/floor_tile_red.png");
 
 	player.sprite = Fund::Sprite(pRenderer, fileToLoad);
 
@@ -851,6 +849,9 @@ void Draw()
 		planet.Draw(pRenderer);
 		asteroid.Draw(pRenderer);
 		player.sprite.Draw(pRenderer);
+
+		map.Draw(pRenderer);
+
 
 		//draw all blasters on the screen
 		for (int i = 0; i < playerBlasterContainer.size(); i++)
