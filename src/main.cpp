@@ -320,7 +320,7 @@ void UpdatePlayer()
 	}
 
 	player.Move(inputVector);
-	player.Update();
+	player.Update(deltaTime);
 	//std::cout << player.sprite.position.y << std::endl;
 }
 
@@ -554,13 +554,13 @@ void Update()
 	for (int i = 0; i < playerBlasterContainer.size(); i++)
 	{
 
-		playerBlasterContainer[i].Update();
+		playerBlasterContainer[i].Update(deltaTime);
 	}
 	//Update enemy blasters across the screen
 	for (int i = 0; i < enemyBlasterContainer.size(); i++)
 	{
 
-		enemyBlasterContainer[i].Update();
+		enemyBlasterContainer[i].Update(deltaTime);
 	}
 	//Update enemy ships
 	for (int i = 0; i < enemyContainer.size(); i++)
@@ -569,7 +569,7 @@ void Update()
 		Player& enemy = enemyContainer[i];
 
 		enemy.Move({ 0, 1 });
-		enemy.Update();
+		enemy.Update(deltaTime);
 		if (enemy.CanShoot())
 		{
 			bool towardUp = false;

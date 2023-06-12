@@ -1,8 +1,5 @@
 #pragma once
-#include <SDL_Image.h>
 #include <SDL.h>
-#include <SDL_ttf.h>
-#include <iostream>
 #include "Sprite.h"
 
 bool AreBoundsOverlapping(int minA, int maxA, int minB, int maxB)

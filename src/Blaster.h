@@ -1,10 +1,5 @@
 #pragma once
-#include <iostream>
 #include "Sprite.h"
-#include <vector>
-
-constexpr float FPS = 60.0f;
-float deltaTime = 1 / FPS; //time passing between frames in seconds
 
 
 class Blaster
@@ -15,7 +10,7 @@ public:
 
 
 	//move bullet
-	void Update()
+	void Update(float deltaTime)
 	{
 		sprite.position.x += velocity.x * deltaTime;
 		sprite.position.y += velocity.y * deltaTime;

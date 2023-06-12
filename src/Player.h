@@ -1,13 +1,7 @@
 #pragma once
-#include <SDL_Image.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <iostream>
-#include <vector>
 #include "Blaster.h"
+#include <vector>
 
-constexpr float FPS = 60.0f;
-float deltaTime = 1 / FPS; //time passing between frames in seconds
 
 class Player
 {
@@ -55,7 +49,7 @@ public:
 		sprite.position.y += input.y * (moveSpeedPx * deltaTime);
 
 	}
-	void Update()
+	void Update(float deltaTime)
 	{
 
 		//tick down the time for the shooting cooldown
