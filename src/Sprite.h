@@ -29,10 +29,10 @@ public:
 		dst = SDL_Rect{ 0,0,0,0 };
 	}
 	//UI Sprite From Text
-	Sprite(TTF_Font* font, const char* text, SDL_Color color) : Sprite()
+	Sprite(TTF_Font* font, const char* text, SDL_Color color, SDL_Renderer* renderer) : Sprite()
 	{
 		SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-		pTexture = SDL_CreateTextureFromSurface(pRenderer, surface);
+		pTexture = SDL_CreateTextureFromSurface(renderer, surface);
 		SDL_FreeSurface(surface);
 		TTF_SizeText(font, text, &dst.w, &dst.h);
 		src.w = dst.w;

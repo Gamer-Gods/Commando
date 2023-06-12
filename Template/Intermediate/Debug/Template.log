@@ -27,17 +27,8 @@ C:\Users\capta\source\repos\Commando\src\main.cpp(306,31): warning C4244: '=': c
 C:\Users\capta\source\repos\Commando\src\main.cpp(388,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\main.cpp(389,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\main.cpp(554,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(557,28): error C2660: 'Blaster::Update': function does not take 0 arguments
-C:\Users\capta\source\repos\Commando\src\Blaster.h(13,7): message : see declaration of 'Blaster::Update'
-C:\Users\capta\source\repos\Commando\src\main.cpp(557,28): message : while trying to match the argument list '()'
 C:\Users\capta\source\repos\Commando\src\main.cpp(560,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(563,27): error C2660: 'Blaster::Update': function does not take 0 arguments
-C:\Users\capta\source\repos\Commando\src\Blaster.h(13,7): message : see declaration of 'Blaster::Update'
-C:\Users\capta\source\repos\Commando\src\main.cpp(563,27): message : while trying to match the argument list '()'
 C:\Users\capta\source\repos\Commando\src\main.cpp(566,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(572,8): error C2660: 'Player::Update': function does not take 0 arguments
-C:\Users\capta\source\repos\Commando\src\Player.h(52,7): message : see declaration of 'Player::Update'
-C:\Users\capta\source\repos\Commando\src\main.cpp(572,8): message : while trying to match the argument list '()'
 C:\Users\capta\source\repos\Commando\src\main.cpp(594,26): warning C4305: '+=': truncation from 'double' to 'float'
 C:\Users\capta\source\repos\Commando\src\main.cpp(630,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\capta\source\repos\Commando\src\main.cpp(636,21): warning C4018: '<': signed/unsigned mismatch

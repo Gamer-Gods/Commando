@@ -19,10 +19,10 @@ public:
 	{
 		fireRepeatTimer = fireRepeatDelay;
 	}
-	void Shoot(bool towardUp, std::vector<Blaster>& container, Vec2 velocity)
+	void Shoot(bool towardUp, std::vector<Blaster>& container, Vec2 velocity, SDL_Renderer* renderer)
 	{
 		//create a new bullet 
-		Sprite blasterSprite = Sprite(pRenderer, "../Assets/textures/blasterbolt.png");
+		Sprite blasterSprite = Sprite(renderer, "../Assets/textures/blasterbolt.png");
 
 		//start blaster at player position
 		blasterSprite.position.x = sprite.getPosition().x;
@@ -43,7 +43,7 @@ public:
 		//reset cooldown
 		RestShootCoodown();
 	}
-	void Move(Vec2 input)
+	void Move(Vec2 input,float deltaTime)
 	{
 		sprite.position.x += input.x * (moveSpeedPx * deltaTime);
 		sprite.position.y += input.y * (moveSpeedPx * deltaTime);

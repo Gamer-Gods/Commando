@@ -568,7 +568,7 @@ void Update()
 		//Reference to enemy at index I
 		Player& enemy = enemyContainer[i];
 
-		enemy.Move({ 0, 1 });
+		enemy.Move({ 0, 1 }, deltaTime);
 		enemy.Update(deltaTime);
 		if (enemy.CanShoot())
 		{
