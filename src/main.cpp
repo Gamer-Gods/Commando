@@ -112,7 +112,7 @@ void LoseGame()
 {
 	std::string loseGameString = "You Lose!! Press R to Restart";
 	SDL_Color color = { 255,255,255,255 };
-	uiSpriteLose = Sprite(uiLoseFont, loseGameString.c_str(), color);
+	uiSpriteLose = Sprite(uiLoseFont, loseGameString.c_str(), color,pRenderer);
 
 
 	uiSpriteLose.position.x = loseSpriteBasePosiiton.x;
@@ -313,13 +313,13 @@ void UpdatePlayer()
 		bool toUp = true;
 		Vec2 velocity{ 0, -1000 };
 		// Pass Blaster Container by referance to add blasts to the container specifically
-		player.Shoot(toUp, playerBlasterContainer, velocity);
+		player.Shoot(toUp, playerBlasterContainer, velocity, pRenderer);
 
 		//play shooting sound
 		Mix_PlayChannel(-1, sfxPlayerShoot, 0);
 	}
 
-	player.Move(inputVector);
+	player.Move(inputVector,deltaTime);
 	player.Update(deltaTime);
 	//std::cout << player.sprite.position.y << std::endl;
 }
@@ -574,7 +574,7 @@ void Update()
 		{
 			bool towardUp = false;
 			Vec2 velocity = { 0,200 };
-			enemy.Shoot(towardUp, enemyBlasterContainer, velocity);
+			enemy.Shoot(towardUp, enemyBlasterContainer, velocity, pRenderer);
 		}
 	}
 	//Spawn enemies on timer
@@ -646,11 +646,11 @@ void Draw()
 		std::string scoreString = "Score: " + std::to_string(scoreCurrent);
 		SDL_Color color = { 255,255,255,255 };
 
-		uiSpriteScore = Sprite(uiFont, scoreString.c_str(), color);
+		uiSpriteScore = Sprite(uiFont, scoreString.c_str(), color, pRenderer);
 
 		std::string healthString = "Player Health: " + std::to_string(player.GetHealth());
 
-		uiSpriteHealth = Sprite(uiFont, healthString.c_str(), color);
+		uiSpriteHealth = Sprite(uiFont, healthString.c_str(), color, pRenderer);
 
 		// RIP takeoff o7
 		Vec2 offset =
