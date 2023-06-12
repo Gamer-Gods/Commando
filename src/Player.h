@@ -3,10 +3,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <iostream>
-#include "Sprite.h"
 #include <vector>
 #include "Blaster.h"
-#include "Vec2.h"
 
 constexpr float FPS = 60.0f;
 float deltaTime = 1 / FPS; //time passing between frames in seconds

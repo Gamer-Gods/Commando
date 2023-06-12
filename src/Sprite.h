@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <iostream>
+#include "Vec2.h"
 
 SDL_Renderer* pRenderer = nullptr;
 struct Sprite

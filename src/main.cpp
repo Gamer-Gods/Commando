@@ -4,7 +4,6 @@
 */
 
 // Core Libraries
-#include "Sprite.h"
 #include "Player.h"
 #include <crtdbg.h>
 #include <iostream>
@@ -17,7 +16,6 @@
 #include <string>
 #include "Blaster.h"
 #include "Collision.h"
-#include "Vec2.h"
 
 
 /*
