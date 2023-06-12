@@ -1,9 +1,11 @@
 /*
-* Name: Ezekiel Evangelista, Cameron Lochray
+* Name: Cameron Lochray, Sam, Zahra
 * Date: April 2, 2023
 */
 
 // Core Libraries
+#include "Sprite.h"
+#include "Player.h"
 #include <crtdbg.h>
 #include <iostream>
 #include <Windows.h>
@@ -13,8 +15,10 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include <string>
+#include "Blaster.h"
+#include "Collision.h"
 #include "Vec2.h"
-#include "Tilemap.h"
+
 
 /*
 * Use SDL to open a window and render some sprites at given locations and scales
@@ -36,247 +40,21 @@ float enemySpawnDelay = 1.0f;
 float enemySpawnTimer = 0.0f;
 float enemyStartSpawnTimer = 1.0f;
 
-Tilemap map;
 
-namespace Fund
-{
-	//declaring a struct or class declares a new type of object we can make. After this is declared, we can make Sprite variables that have all of the contained data fields, and functions
-	struct Sprite
-	{
-	private:
-		// public fields can be accessed from outside the struct or class
-		SDL_Texture* pTexture;
-		SDL_Rect src;
-		SDL_Rect dst;
-
-	public:
-
-		double rotation = 0; //in degrees
-		SDL_RendererFlip flipState = SDL_FLIP_NONE;
-		Vec2 position; //where sprite is on screen
-
-		//This is a constructor. this is a special type of function used when creating an object
-		//The compiler knows it's a constructor because it has parentheses like a function, has the SAME NAME as the struct or class, and has no return. This one has no arguments. In that case, it's called the default constructor and is used to set default values.
-		Sprite()
-		{
-			//std::cout << "Sprite default constructor\n";
-			pTexture = nullptr;
-			src = SDL_Rect{ 0,0,0,0 };
-			dst = SDL_Rect{ 0,0,0,0 };
-		}
-		//UI Sprite From Text
-		Sprite(TTF_Font* font, const char* text, SDL_Color color) : Sprite()
-		{
-			SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-			pTexture = SDL_CreateTextureFromSurface(pRenderer, surface);
-			SDL_FreeSurface(surface);
-			TTF_SizeText(font, text, &dst.w, &dst.h);
-			src.w = dst.w;
-			src.h = dst.h;
-			
-		}
-
-		//constructors can have arguments as well, which is handy when we need to make them different
-		Sprite(SDL_Renderer* renderer, const char* filePathToLoad)
-		{
-			//std::cout << "Sprite filepath constructor\n";
-			src = SDL_Rect{ 0,0,0,0 };
-
-			pTexture = IMG_LoadTexture(renderer, filePathToLoad); //load into our pTexture pointer
-			if (pTexture == NULL)
-			{
-				std::cout << "Image failed to load: " << SDL_GetError() << std::endl;
-			}
-			SDL_QueryTexture(pTexture, NULL, NULL, &src.w, &src.h); //ask for the dimensions of the texture
-			dst = SDL_Rect{ 0,0,src.w,src.h };
-			//at this point, the width and the height of the texture should be placed at the memory addresses of src.w and src.h
-		}
-
-		//getters and setters
-
-		//sets size for width and height
-		void setSize(Vec2 sizeWidthHeight)
-		{
-			dst.w = sizeWidthHeight.x;
-			dst.h = sizeWidthHeight.y;
-		}
-
-		//sets width and height
-		void setSize(int w, int h)
-		{
-			dst.w = w;
-			dst.h = h;
-		}
-
-		SDL_Rect GetRect() const //this function does not change anything
-		{
-			SDL_Rect returnValue = dst;
-			returnValue.x = position.x;
-			returnValue.y = position.y;
-			return dst;
-		}
-
-		//return width and height
-		Vec2 getSize() const
-		{
-			Vec2 returnVec = { dst.w,dst.h };
-			return returnVec;
-		}
-
-		//return x and y position
-		Vec2 getPosition()
-		{
-			Vec2 returnVec = { dst.x,dst.y };
-			return returnVec;
-		}
-
-
-		//this draw function can be called on individual varuables of type Fund::Sprite, which will use their own variables to call SDL_RenderCopy. So, we can declare and draw new sprites with two lines:
-		//Fund::Sprite myNewSprite = Sprite(pRenderer, "somefile.png");
-		//myNewSprite.Draw(pRenderer);
-		void Draw(SDL_Renderer* renderer)
-		{
-			dst.x = position.x;
-			dst.y = position.y;
-			SDL_RenderCopyEx(renderer, pTexture, &src, &dst, rotation, NULL, flipState);
-		}
-
-		void Cleanup()
-		{
-			SDL_DestroyTexture(pTexture);
-			std::cout << SDL_GetError();
-		}
-
-	};
-	class Blaster
-	{
-	public:
-		Sprite sprite;
-		Vec2 velocity;
-
-
-		//move bullet
-		void Update()
-		{
-			sprite.position.x += velocity.x * deltaTime;
-			sprite.position.y += velocity.y * deltaTime;
-		}
-	};
-
-	// Class to Move and Shoot Projectiles
-	class Ship
-	{
-	private:
-		float fireRepeatTimer = 0.0f;
-
-	public:
-		Sprite sprite;
-		float moveSpeedPx = 500;
-		float fireRepeatDelay = 0.5f;
-		float shipHealth = 10;
-
-		// Current Version only handles shooting up or down
-
-		void RestShootCoodown()
-		{
-			fireRepeatTimer = fireRepeatDelay;
-		}
-		void Shoot(bool towardUp, std::vector<Fund::Blaster>& container, Fund::Vec2 velocity)
-		{
-			//create a new bullet 
-			Fund::Sprite blasterSprite = Fund::Sprite(pRenderer, "../Assets/textures/blasterbolt.png");
-
-			//start blaster at player position
-			blasterSprite.position.x = sprite.getPosition().x;
-			if (towardUp)
-			{
-				blasterSprite.position.x += sprite.getSize().x - (sprite.getSize().x / 1.5);
-			}
-			blasterSprite.position.y = sprite.getPosition().y + (sprite.getSize().y / 2) - (blasterSprite.getSize().y / 2);
-
-			//Set up our blaster class instance
-			Blaster blaster;
-			blaster.sprite = blasterSprite;
-			blaster.velocity = velocity;
-
-			//add blaster to container
-			container.push_back(blaster);
-
-			//reset cooldown
-			RestShootCoodown();
-		}
-		void Move(Vec2 input)
-		{
-			sprite.position.x += input.x * (moveSpeedPx * deltaTime);
-			sprite.position.y += input.y * (moveSpeedPx * deltaTime);
-
-		}
-		void Update()
-		{
-
-			//tick down the time for the shooting cooldown
-			fireRepeatTimer -= deltaTime;
-		}
-		bool CanShoot()
-		{
-			return(fireRepeatTimer <= 0.0f);
-		}
-		float GetHealth()
-		{
-			return(shipHealth);
-		}
-		void TakeHealth(float h)
-		{
-			shipHealth = shipHealth - h;
-		}
-		void SetHealth(float h)
-		{
-			shipHealth = h;
-		}
-	};
-	//Part of AABB collision detection, returns true in bounds overlap
-	bool AreBoundsOverlapping(int minA, int maxA, int minB, int maxB)
-	{
-		bool isOverlapping = false;
-		if (maxA >= minB && maxA <= maxB) // check if max a is inside of B
-		{
-			isOverlapping = true;
-		}
-		if (minA <= maxB && minA >= minB) // check if min a is inside of B
-		{
-			isOverlapping = true;
-		}
-		return isOverlapping;
-	}
-	// Check collison between two sprites
-	bool AreSpritesOverlapping(const Sprite& A, const Sprite& B)
-	{
-		// get bounds of each sprite on x and y
-		int minAx, maxAx, minBx, maxBx;
-		int minAy, maxAy, minBy, maxBy;
-
-		SDL_Rect boundsA = A.GetRect();
-		SDL_Rect boundsB = B.GetRect();
-
-		SDL_bool isColliding = SDL_HasIntersection(&boundsA, &boundsB);
-		return (bool)isColliding;
-
-	}
-}
 
 //create new instances of struct Fund to load textures
-Fund::Ship player;
+Player player;
 
 // Enemy to copy
-Fund::Sprite enemyOriginal;
+Sprite enemyOriginal;
 
 
-Fund::Sprite background;
-Fund::Sprite planet;
-Fund::Sprite asteroid;
-std::vector<Fund::Blaster> playerBlasterContainer; //std::vector is a class which allows dynamic size. This is a dynamic array of Fund::Sprite
-std::vector<Fund::Ship> enemyContainer; //Contains Enemy Ships
-std::vector<Fund::Blaster> enemyBlasterContainer; //Contains Enemy Projectiles
+Sprite background;
+Sprite planet;
+Sprite asteroid;
+std::vector<Blaster> playerBlasterContainer; //std::vector is a class which allows dynamic size. This is a dynamic array of Sprite
+std::vector<Player> enemyContainer; //Contains Enemy Ships
+std::vector<Blaster> enemyBlasterContainer; //Contains Enemy Projectiles
 
 
 //audio files
@@ -289,18 +67,266 @@ int audioVolumeCurrent = MIX_MAX_VOLUME / 2;
 TTF_Font* uiFont;
 TTF_Font* uiLoseFont;
 int scoreCurrent = 0;
-Fund::Sprite uiSpriteScore;
-Fund::Sprite uiSpriteHealth;
-Fund::Sprite uiSpriteLose;
+Sprite uiSpriteScore;
+Sprite uiSpriteHealth;
+Sprite uiSpriteLose;
 
 float shakeLevel = 0.0f; // betweeen 0 and 1
 float shakeMagnitude = 20.0f;
 float shakeDecay = 2.0f;
-Fund::Vec2 scoreSpriteBasePosiiton = { 50,50 };
-Fund::Vec2 healthSpriteBasePosiiton = { 800,50 };
-Fund::Vec2 loseSpriteBasePosiiton = { 10,300 };
+Vec2 scoreSpriteBasePosiiton = { 50,50 };
+Vec2 healthSpriteBasePosiiton = { 800,50 };
+Vec2 loseSpriteBasePosiiton = { 10,300 };
 
-//Initialize SDL, open the window and set up renderer
+//input variables
+bool isUpPressed = false;
+bool isDownPressed = false;
+bool isLeftPressed = false;
+bool isRightPressed = false;
+bool isShootPressed = false;
+
+
+//Audio
+Mix_Chunk* LoadSound(const char* filePath)
+{
+	Mix_Chunk* sound = Mix_LoadWAV(filePath);
+	if (sound == NULL)
+	{
+		std::cout << "Mix_LoadWAV failed to load file: " << filePath << "-" << SDL_GetError() << std::endl;
+	}
+	return sound;
+}
+void Start()
+{
+	Mix_Volume(-1, audioVolumeCurrent);
+	Mix_PlayMusic(bgmDefault, -1);
+}
+//health
+void Restart()
+{
+	loseGame = false;
+	player.SetHealth(10);
+
+	enemyContainer.clear();
+	enemyBlasterContainer.clear();
+}
+void LoseGame()
+{
+	std::string loseGameString = "You Lose!! Press R to Restart";
+	SDL_Color color = { 255,255,255,255 };
+	uiSpriteLose = Sprite(uiLoseFont, loseGameString.c_str(), color);
+
+
+	uiSpriteLose.position.x = loseSpriteBasePosiiton.x;
+	uiSpriteLose.position.y = loseSpriteBasePosiiton.y;
+
+	loseGame = true;
+}
+void TakeHealth(int damage)
+{
+	player.TakeHealth(1);
+	if (player.GetHealth() <= 0)
+	{
+		LoseGame();
+	}
+}
+//Score
+void AddScore(int toAdd)
+{
+	scoreCurrent += toAdd;
+	shakeLevel = min(1, shakeLevel + 0.5f);
+
+}
+//Spawn
+void SpawnEnemy()
+{
+	//enemy textures
+	Sprite enemy = enemyOriginal;
+
+	//Spawning at Random Position
+	enemy.position =
+	{
+		(float)(rand() % (SCREEN_WIDTH - (int)enemy.getSize().x)),
+		 (0)
+	};
+	enemy.flipState = SDL_FLIP_HORIZONTAL;
+	enemy.rotation = 270.0;
+
+	Player enemy1;
+	enemy1.sprite = enemy;
+
+	enemy1.fireRepeatDelay = 1.5;
+	enemy1.moveSpeedPx = 50;
+	enemy1.shipHealth = 1;
+	enemy1.RestShootCoodown();
+	//Add to enemy
+	enemyContainer.push_back(enemy1);
+	//reset timer
+	enemySpawnTimer = enemySpawnDelay;
+}
+//Collison
+bool IsOffScreen(Sprite sprite)
+{
+	bool isOffLeft = sprite.position.x + sprite.getSize().x < 0;
+	bool isOffRight = sprite.position.x > SCREEN_WIDTH;
+	bool isOffTop = sprite.position.y + sprite.getSize().y < 0 - sprite.getSize().y;
+	bool isOffBottom = sprite.position.y > SCREEN_HEIGHT;
+	return (isOffLeft || isOffRight || isOffTop || isOffBottom);
+}
+void CollisionDetection()
+{
+	for (std::vector<Blaster>::iterator it = enemyBlasterContainer.begin(); it != enemyBlasterContainer.end();)
+	{
+		Sprite& enemyBlaster = it->sprite;
+		if (AreSpritesOverlapping(player.sprite, enemyBlaster))
+		{
+			std::cout << "Player was Hit" << std::endl;
+			TakeHealth(1);
+
+			//sound when player gets hit
+			Mix_PlayChannel(-1, sfxShipHit, 0);
+
+			//remove this element from the container
+			it = enemyBlasterContainer.erase(it);
+		}
+		if (it != enemyBlasterContainer.end())
+		{
+			it++;
+		}
+	}
+	for (std::vector<Blaster>::iterator blasterIterator = playerBlasterContainer.begin(); blasterIterator != playerBlasterContainer.end();)
+	{
+		for (std::vector<Player>::iterator enemyIterator = enemyContainer.begin(); enemyIterator != enemyContainer.end();)
+		{
+			//Test for collision between player blaster and enemy
+			if (AreSpritesOverlapping(blasterIterator->sprite, enemyIterator->sprite))
+			{
+				//destroy player projectile
+				blasterIterator = playerBlasterContainer.erase(blasterIterator);
+				//destroy enemy
+				enemyIterator = enemyContainer.erase(enemyIterator);
+
+				AddScore(100);
+				//enemy gets hit
+				Mix_PlayChannel(-1, sfxShipHit, 0);
+
+				//if we destroy stop comparing
+				if (blasterIterator == playerBlasterContainer.end())
+				{
+					break; // leave for loop
+				}
+			}
+			if (enemyIterator != enemyContainer.end())
+			{
+				enemyIterator++;
+			}
+		}
+		if (blasterIterator != playerBlasterContainer.end())
+		{
+			blasterIterator++;
+		}
+	}
+}
+void RemoveOffscreenSprites()
+{
+	for (auto blasterIterator = playerBlasterContainer.begin(); blasterIterator != playerBlasterContainer.end(); blasterIterator++)
+	{
+		if (IsOffScreen(blasterIterator->sprite))
+		{
+			blasterIterator->sprite.Cleanup();
+			blasterIterator = playerBlasterContainer.erase(blasterIterator);
+			if (blasterIterator == playerBlasterContainer.end())
+			{
+				break;
+			}
+		}
+
+	}
+	for (auto enemyBlasterIterator = enemyBlasterContainer.begin(); enemyBlasterIterator != enemyBlasterContainer.end(); enemyBlasterIterator++)
+	{
+		if (IsOffScreen(enemyBlasterIterator->sprite))
+		{
+			enemyBlasterIterator->sprite.Cleanup();
+			enemyBlasterIterator = enemyBlasterContainer.erase(enemyBlasterIterator);
+			if (enemyBlasterIterator == enemyBlasterContainer.end())
+			{
+				break;
+			}
+		}
+
+	}
+	for (auto enemyIterator = enemyContainer.begin(); enemyIterator != enemyContainer.end(); enemyIterator++)
+	{
+		if (IsOffScreen(enemyIterator->sprite))
+		{
+			enemyIterator = enemyContainer.erase(enemyIterator);
+			if (enemyIterator == enemyContainer.end())
+			{
+				break;
+			}
+		}
+
+	}
+}
+//Player
+void UpdatePlayer()
+{
+	//moves the sprites
+	Vec2 inputVector;
+	if (isUpPressed)
+	{
+		inputVector.y = -1;
+		if (player.sprite.position.y < 0)
+		{
+			player.sprite.position.y = 0;
+		}
+	}
+
+	if (isDownPressed)
+	{
+		inputVector.y = 1;
+		const int lowestPointScreen = SCREEN_HEIGHT - player.sprite.getSize().y;
+		if (player.sprite.position.y > lowestPointScreen)
+		{
+			player.sprite.position.y = lowestPointScreen;
+		}
+	}
+	if (isLeftPressed)
+	{
+		inputVector.x = -1;
+		if (player.sprite.position.x < 0)
+		{
+			player.sprite.position.x = 0;
+		}
+	}
+	if (isRightPressed)
+	{
+		inputVector.x = 1;
+		const int leftmostPointScreen = SCREEN_WIDTH - player.sprite.getSize().x;
+		if (player.sprite.position.x > leftmostPointScreen)
+		{
+			player.sprite.position.x = leftmostPointScreen;
+		}
+	}
+
+	//if shooting and our shooting is off cooldown
+	if (isShootPressed && player.CanShoot())
+	{
+		bool toUp = true;
+		Vec2 velocity{ 0, -1000 };
+		// Pass Blaster Container by referance to add blasts to the container specifically
+		player.Shoot(toUp, playerBlasterContainer, velocity);
+
+		//play shooting sound
+		Mix_PlayChannel(-1, sfxPlayerShoot, 0);
+	}
+
+	player.Move(inputVector);
+	player.Update();
+	//std::cout << player.sprite.position.y << std::endl;
+}
+
+//Keep
 bool Init()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -344,7 +370,7 @@ bool Init()
 		std::cout << "Mix_OpenAudio failed: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	
+
 	if (TTF_Init() != 0)
 	{
 		std::cout << "TTF Init creation failed: " << SDL_GetError() << std::endl;
@@ -352,28 +378,15 @@ bool Init()
 	}
 
 	return true;
-}
-
-Mix_Chunk* LoadSound(const char* filePath)
-{
-	Mix_Chunk* sound = Mix_LoadWAV(filePath);
-	if (sound == NULL)
-	{
-		std::cout << "Mix_LoadWAV failed to load file: " << filePath << "-" << SDL_GetError() << std::endl;
-	}
-	return sound;
-}
-
+}//keep
 void Load()
 {
 	//player textures
 	char* fileToLoad = "../Assets/textures/fighter.png";
 
-	map.LoadTextureForTile(Floor, "../Assets/textures/floor_tile_red.png");
+	player.sprite = Sprite(pRenderer, fileToLoad);
 
-	player.sprite = Fund::Sprite(pRenderer, fileToLoad);
-
-	Fund::Vec2 shipSize = player.sprite.getSize();
+	Vec2 shipSize = player.sprite.getSize();
 	int shipWidth = shipSize.x;
 	int shipHeight = shipSize.y;
 
@@ -382,15 +395,15 @@ void Load()
 	player.sprite.position = { (SCREEN_WIDTH / 2) - 50, 500 };
 
 	//background texture
-	background = Fund::Sprite(pRenderer, "../Assets/textures/stars.png");
+	background = Sprite(pRenderer, "../Assets/textures/stars.png");
 	background.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	//planet texture
-	planet = Fund::Sprite(pRenderer, "../Assets/textures/ring-planet.png");
+	planet = Sprite(pRenderer, "../Assets/textures/ring-planet.png");
 	planet.position = { 300, 400 };
 
 	//asteroid textures
-	asteroid = Fund::Sprite(pRenderer, "../Assets/textures/asteroid1.png");
+	asteroid = Sprite(pRenderer, "../Assets/textures/asteroid1.png");
 	asteroid.setSize(50, 50);
 	asteroid.position = { 700, 350 };
 
@@ -417,42 +430,8 @@ void Load()
 		std::cout << "Font failed to load: " << fileToLoad;
 	}
 
-	enemyOriginal = Fund::Sprite(pRenderer, "../Assets/textures/d7_small.png");
-}
-
-void Start()
-{
-	Mix_Volume(-1, audioVolumeCurrent);
-	Mix_PlayMusic(bgmDefault, -1);
-}
-
-//input variables
-bool isUpPressed = false;
-bool isDownPressed = false;
-bool isLeftPressed = false;
-bool isRightPressed = false;
-bool isShootPressed = false;
-
-void Restart()
-{
-	loseGame = false;
-	player.SetHealth(10);
-
-	enemyContainer.clear();
-	enemyBlasterContainer.clear();
-}
-void LoseGame()
-{
-	std::string loseGameString = "You Lose!! Press R to Restart";
-	SDL_Color color = { 255,255,255,255 };
-	uiSpriteLose = Fund::Sprite(uiLoseFont, loseGameString.c_str(), color);
-
-
-	uiSpriteLose.position.x = loseSpriteBasePosiiton.x;
-	uiSpriteLose.position.y = loseSpriteBasePosiiton.y;
-
-	loseGame = true;
-}
+	enemyOriginal = Sprite(pRenderer, "../Assets/textures/d7_small.png");
+} //keep
 void Input()
 {
 	SDL_Event event; //event data polled each time
@@ -560,207 +539,7 @@ void Input()
 
 		}
 	}
-}
-void AddScore(int toAdd)
-{
-	scoreCurrent += toAdd;
-	shakeLevel = min(1, shakeLevel + 0.5f);
-
-}
-void TakeHealth(int damage)
-{
-	player.TakeHealth(1);
-	if (player.GetHealth() <= 0)
-	{
-		LoseGame();
-	}
-}
-void SpawnEnemy()
-{
-	//enemy textures
-	Fund::Sprite enemy = enemyOriginal;
-	
-	//Spawning at Random Position
-	enemy.position =
-	{
-		(float)(rand() % (SCREEN_WIDTH - (int)enemy.getSize().x)),
-		 (0)
-	};
-	enemy.flipState = SDL_FLIP_HORIZONTAL;
-	enemy.rotation = 270.0;
-
-	Fund::Ship enemy1;
-	enemy1.sprite = enemy;
-
-	enemy1.fireRepeatDelay = 1.5;
-	enemy1.moveSpeedPx = 50;
-	enemy1.shipHealth = 1;
-	enemy1.RestShootCoodown();
-	//Add to enemy
-	enemyContainer.push_back(enemy1);
-	//reset timer
-	enemySpawnTimer = enemySpawnDelay;
-}
-//Returns true if sprite is overlapping screen
-bool IsOffScreen(Fund::Sprite sprite)
-{
-	bool isOffLeft = sprite.position.x + sprite.getSize().x < 0;
-	bool isOffRight = sprite.position.x > SCREEN_WIDTH;
-	bool isOffTop = sprite.position.y + sprite.getSize().y < 0 - sprite.getSize().y;
-	bool isOffBottom = sprite.position.y > SCREEN_HEIGHT;
-	return (isOffLeft || isOffRight || isOffTop || isOffBottom);
-}
-void UpdatePlayer()
-{
-	//moves the sprites
-	Fund::Vec2 inputVector;
-	if (isUpPressed)
-	{
-		inputVector.y = -1;
-		if (player.sprite.position.y < 0)
-		{
-			player.sprite.position.y = 0;
-		}
-	}
-
-	if (isDownPressed)
-	{
-		inputVector.y = 1;
-		const int lowestPointScreen = SCREEN_HEIGHT - player.sprite.getSize().y;
-		if (player.sprite.position.y > lowestPointScreen)
-		{
-			player.sprite.position.y = lowestPointScreen;
-		}
-	}
-	if (isLeftPressed)
-	{
-		inputVector.x = -1;
-		if (player.sprite.position.x < 0)
-		{
-			player.sprite.position.x = 0;
-		}
-	}
-	if (isRightPressed)
-	{
-		inputVector.x = 1;
-		const int leftmostPointScreen = SCREEN_WIDTH - player.sprite.getSize().x;
-		if (player.sprite.position.x > leftmostPointScreen)
-		{
-			player.sprite.position.x = leftmostPointScreen;
-		}
-	}
-
-	//if shooting and our shooting is off cooldown
-	if (isShootPressed && player.CanShoot())
-	{
-		bool toUp = true;
-		Fund::Vec2 velocity{ 0,-1000 };
-		// Pass Blaster Container by referance to add blasts to the container specifically
-		player.Shoot(toUp, playerBlasterContainer, velocity);
-
-		//play shooting sound
-		Mix_PlayChannel(-1, sfxPlayerShoot, 0);
-	}
-
-	player.Move(inputVector);
-	player.Update();
-	//std::cout << player.sprite.position.y << std::endl;
-}
-void CollisionDetection()
-{
-	for (std::vector<Fund::Blaster>::iterator it = enemyBlasterContainer.begin(); it != enemyBlasterContainer.end();)
-	{
-		Fund::Sprite& enemyBlaster = it->sprite;
-		if (Fund::AreSpritesOverlapping(player.sprite, enemyBlaster))
-		{
-			std::cout << "Player was Hit" << std::endl;
-			TakeHealth(1);
-
-			//sound when player gets hit
-			Mix_PlayChannel(-1, sfxShipHit, 0);
-
-			//remove this element from the container
-			it = enemyBlasterContainer.erase(it);
-		}
-		if (it != enemyBlasterContainer.end())
-		{
-			it++;
-		}
-	}
-	for (std::vector<Fund::Blaster>::iterator blasterIterator = playerBlasterContainer.begin(); blasterIterator != playerBlasterContainer.end();)
-	{
-		for (std::vector<Fund::Ship>::iterator enemyIterator = enemyContainer.begin(); enemyIterator != enemyContainer.end();)
-		{
-			//Test for collision between player blaster and enemy
-			if (Fund::AreSpritesOverlapping(blasterIterator->sprite, enemyIterator->sprite))
-			{
-				//destroy player projectile
-				blasterIterator = playerBlasterContainer.erase(blasterIterator);
-				//destroy enemy
-				enemyIterator = enemyContainer.erase(enemyIterator);
-
-				AddScore(100);
-				//enemy gets hit
-				Mix_PlayChannel(-1, sfxShipHit, 0);
-
-				//if we destroy stop comparing
-				if (blasterIterator == playerBlasterContainer.end())
-				{
-					break; // leave for loop
-				}
-			}
-			if (enemyIterator != enemyContainer.end())
-			{
-				enemyIterator++;
-			}
-		}
-		if (blasterIterator != playerBlasterContainer.end())
-		{
-			blasterIterator++;
-		}
-	}
-}
-void RemoveOffscreenSprites()
-{
-	for (auto blasterIterator = playerBlasterContainer.begin(); blasterIterator != playerBlasterContainer.end(); blasterIterator++)
-	{
-		if (IsOffScreen(blasterIterator->sprite))
-		{
-			blasterIterator->sprite.Cleanup();
-			blasterIterator = playerBlasterContainer.erase(blasterIterator);
-			if (blasterIterator == playerBlasterContainer.end())
-			{
-				break;
-			}
-		}
-		
-	}
-	for (auto enemyBlasterIterator = enemyBlasterContainer.begin(); enemyBlasterIterator != enemyBlasterContainer.end(); enemyBlasterIterator++)
-	{
-		if (IsOffScreen(enemyBlasterIterator->sprite))
-		{
-			enemyBlasterIterator->sprite.Cleanup();
-			enemyBlasterIterator = enemyBlasterContainer.erase(enemyBlasterIterator);
-			if (enemyBlasterIterator == enemyBlasterContainer.end())
-			{
-				break;
-			}
-		}
-
-	}
-	for (auto enemyIterator = enemyContainer.begin(); enemyIterator != enemyContainer.end(); enemyIterator++)
-	{
-		if (IsOffScreen(enemyIterator->sprite))
-		{
-			enemyIterator = enemyContainer.erase(enemyIterator);
-			if (enemyIterator == enemyContainer.end())
-			{
-				break;
-			}
-		}
-	
-	}
-}
+}//keep
 void Update()
 {
 	if (loseGame == false)
@@ -768,9 +547,9 @@ void Update()
 		UpdatePlayer();//moves the sprites
 		CollisionDetection(); //Detects collsions
 	}
-	
 
-	Fund::Vec2 inputVector;
+
+	Vec2 inputVector;
 
 
 	//Update blasters across the screen
@@ -789,14 +568,14 @@ void Update()
 	for (int i = 0; i < enemyContainer.size(); i++)
 	{
 		//Reference to enemy at index I
-		Fund::Ship& enemy = enemyContainer[i];
+		Player& enemy = enemyContainer[i];
 
 		enemy.Move({ 0, 1 });
 		enemy.Update();
 		if (enemy.CanShoot())
 		{
 			bool towardUp = false;
-			Fund::Vec2 velocity = { 0,200 };
+			Vec2 velocity = { 0,200 };
 			enemy.Shoot(towardUp, enemyBlasterContainer, velocity);
 		}
 	}
@@ -834,8 +613,7 @@ void Update()
 
 	}
 	RemoveOffscreenSprites();
-}
-
+}//keep
 void Draw()
 {
 	if (loseGame == false)
@@ -849,9 +627,6 @@ void Draw()
 		planet.Draw(pRenderer);
 		asteroid.Draw(pRenderer);
 		player.sprite.Draw(pRenderer);
-
-		map.Draw(pRenderer);
-
 
 		//draw all blasters on the screen
 		for (int i = 0; i < playerBlasterContainer.size(); i++)
@@ -873,14 +648,14 @@ void Draw()
 		std::string scoreString = "Score: " + std::to_string(scoreCurrent);
 		SDL_Color color = { 255,255,255,255 };
 
-		uiSpriteScore = Fund::Sprite(uiFont, scoreString.c_str(), color);
+		uiSpriteScore = Sprite(uiFont, scoreString.c_str(), color);
 
 		std::string healthString = "Player Health: " + std::to_string(player.GetHealth());
 
-		uiSpriteHealth = Fund::Sprite(uiFont, healthString.c_str(), color);
+		uiSpriteHealth = Sprite(uiFont, healthString.c_str(), color);
 
 		// RIP takeoff o7
-		Fund::Vec2 offset =
+		Vec2 offset =
 		{
 			shakeLevel * shakeMagnitude * (float)(rand() % 10000) * 0.0001,
 			shakeLevel * shakeMagnitude * (float)(rand() % 10000) * 0.0001
@@ -913,9 +688,7 @@ void Draw()
 	}
 
 
-}
-
-
+}//keep
 void Cleanup()
 {
 	background.Cleanup();
@@ -942,7 +715,7 @@ void Cleanup()
 	SDL_DestroyWindow(pWindow);
 	SDL_DestroyRenderer(pRenderer);
 	SDL_Quit();
-}
+}//keep
 
 
 /**
@@ -979,7 +752,7 @@ int main(int argc, char* args[])
 
 		//figure out how long we need to wait for the next frame timing
 		//current time - time at start of frame = time elapsed during this frame
-		 
+
 		if (const float frame_time = static_cast<float>(SDL_GetTicks()) - frame_start;
 			frame_time < DELAY_TIME)
 		{
