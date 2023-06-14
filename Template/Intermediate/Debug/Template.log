@@ -13,7 +13,7 @@ C:\Users\capta\source\repos\Commando\src\Sprite.h(93,31): warning C4838: convers
 C:\Users\capta\source\repos\Commando\src\Sprite.h(93,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\capta\source\repos\Commando\src\Sprite.h(103,19): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\Sprite.h(104,19): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Player.h(31,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Player.h(40,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 C:\Users\capta\source\repos\Commando\src\Collision.h(23,13): warning C4101: 'maxAy': unreferenced local variable
 C:\Users\capta\source\repos\Commando\src\Collision.h(23,20): warning C4101: 'minBy': unreferenced local variable
 C:\Users\capta\source\repos\Commando\src\Collision.h(22,6): warning C4101: 'minAx': unreferenced local variable
@@ -22,24 +22,24 @@ C:\Users\capta\source\repos\Commando\src\Collision.h(22,13): warning C4101: 'max
 C:\Users\capta\source\repos\Commando\src\Collision.h(23,6): warning C4101: 'minAy': unreferenced local variable
 C:\Users\capta\source\repos\Commando\src\Collision.h(23,27): warning C4101: 'maxBy': unreferenced local variable
 C:\Users\capta\source\repos\Commando\src\Collision.h(22,20): warning C4101: 'minBx': unreferenced local variable
-C:\Users\capta\source\repos\Commando\src\main.cpp(286,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(286,31): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(289,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(303,48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(303,33): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(306,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(388,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(389,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(554,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(560,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(566,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(594,26): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\capta\source\repos\Commando\src\main.cpp(630,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(636,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(641,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(658,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\main.cpp(658,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(659,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\main.cpp(659,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  LINK : C:\Users\capta\source\repos\Commando\bin\Debug\Template.exe not found or not built by the last incremental link; performing full link
+C:\Users\capta\source\repos\Commando\src\main.cpp(290,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(290,31): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(293,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(307,48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(307,33): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(310,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(401,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(402,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(577,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(583,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(589,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(617,26): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\capta\source\repos\Commando\src\main.cpp(653,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(659,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(664,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(681,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\main.cpp(681,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(682,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\main.cpp(682,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Player.h(104): warning C4715: 'Player::duringDodge': not all control paths return a value
   Template.vcxproj -> C:\Users\capta\source\repos\Commando\bin\Debug\Template.exe

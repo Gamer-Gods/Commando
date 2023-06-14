@@ -7,17 +7,26 @@ class Player
 {
 private:
 	float fireRepeatTimer = 0.0f;
+	float dodgeImmuneTimer = 0.5f;
+	float dodgeRepeatTimer = 0.0f;
 public:
 	Sprite sprite;
 	float moveSpeedPx = 500;
 	float fireRepeatDelay = 0.5f;
 	float shipHealth = 10;
+	float dodgeRepeatDelay = 1.0f;
+	bool isDodging = false;
+
 
 	// Current Version only handles shooting up or down
 
 	void RestShootCoodown()
 	{
 		fireRepeatTimer = fireRepeatDelay;
+	}
+	void ResetDodgeCooldown()
+	{
+		dodgeRepeatTimer = dodgeRepeatDelay;
 	}
 	void Shoot(bool towardUp, std::vector<Blaster>& container, Vec2 velocity, SDL_Renderer* renderer)
 	{
@@ -54,10 +63,19 @@ public:
 
 		//tick down the time for the shooting cooldown
 		fireRepeatTimer -= deltaTime;
+		dodgeRepeatTimer -= deltaTime;
+		if (isDodging)
+		{
+			dodgeImmuneTimer -= deltaTime;
+		}
 	}
 	bool CanShoot()
 	{
 		return(fireRepeatTimer <= 0.0f);
+	}
+	bool CanDodge()
+	{
+		return(dodgeRepeatTimer <= 0.0f);
 	}
 	float GetHealth()
 	{
@@ -70,5 +88,24 @@ public:
 	void SetHealth(float h)
 	{
 		shipHealth = h;
+	}
+	bool startDodge()
+	{
+		//moveSpeedPx = 2000;
+		isDodging = true;
+		return isDodging;
+	}
+	bool duringDodge()
+	{
+		if (dodgeImmuneTimer <= 0.0f)
+		{
+			return isDodging = false;
+		}
+	}
+	void endDodge()
+	{
+		dodgeImmuneTimer = 0.5f;
+		moveSpeedPx = 500;
+		ResetDodgeCooldown();
 	}
 };

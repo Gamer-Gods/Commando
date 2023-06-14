@@ -82,7 +82,7 @@ bool isDownPressed = false;
 bool isLeftPressed = false;
 bool isRightPressed = false;
 bool isShootPressed = false;
-
+bool isDodgePressed = false;
 
 //Audio
 Mix_Chunk* LoadSound(const char* filePath)
@@ -179,7 +179,11 @@ void CollisionDetection()
 		if (AreSpritesOverlapping(player.sprite, enemyBlaster))
 		{
 			std::cout << "Player was Hit" << std::endl;
-			TakeHealth(1);
+			if (!player.isDodging)
+			{
+				TakeHealth(1);
+			}
+				
 
 			//sound when player gets hit
 			Mix_PlayChannel(-1, sfxShipHit, 0);
@@ -317,6 +321,15 @@ void UpdatePlayer()
 
 		//play shooting sound
 		Mix_PlayChannel(-1, sfxPlayerShoot, 0);
+	}
+	
+	if (isDodgePressed && player.CanDodge())
+	{
+		player.startDodge();
+	}
+	if (!player.duringDodge())
+	{
+		player.endDodge();
 	}
 
 	player.Move(inputVector,deltaTime);
@@ -477,6 +490,11 @@ void Input()
 				Restart();
 				break;
 			}
+			case(SDL_SCANCODE_I):
+			{
+				isDodgePressed = true;
+				break;
+			}
 			break;
 			}
 			break;
@@ -513,6 +531,11 @@ void Input()
 			case(SDL_SCANCODE_SPACE):
 			{
 				isShootPressed = false;
+				break;
+			}
+			case(SDL_SCANCODE_I):
+			{
+				isDodgePressed = false;
 				break;
 			}
 			case(SDL_SCANCODE_EQUALS):
