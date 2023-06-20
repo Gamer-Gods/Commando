@@ -16,6 +16,7 @@
 #include <string>
 #include "Blaster.h"
 #include "Collision.h"
+#include "Tilemap.h"
 
 
 /*
@@ -83,6 +84,9 @@ bool isLeftPressed = false;
 bool isRightPressed = false;
 bool isShootPressed = false;
 bool isDodgePressed = false;
+
+//Map
+Tilemap map;
 
 //Audio
 Mix_Chunk* LoadSound(const char* filePath)
@@ -392,6 +396,11 @@ bool Init()
 }//keep
 void Load()
 {
+	//Level textures
+	map.LoadTextureForTile(F, pRenderer, "../Assets/textures/floor_tile_gray.png");
+	map.LoadTextureForTile(W, pRenderer, "../Assets/textures/wall_red.png");
+
+
 	//player textures
 	char* fileToLoad = "../Assets/textures/fighter.png";
 
@@ -645,6 +654,8 @@ void Draw()
 		// refreshes the frame so ship doesn't smear when it moves
 		SDL_RenderClear(pRenderer);
 		background.Draw(pRenderer);
+		map.Draw(pRenderer);
+
 		planet.Draw(pRenderer);
 		asteroid.Draw(pRenderer);
 		player.sprite.Draw(pRenderer);
