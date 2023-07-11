@@ -80,6 +80,11 @@ TileCoord operator/(const TileCoord& l, const int& r)
 }
 
 
+Vec2 operator+(const Vec2& l, const Vec2& r)
+{
+	return { l.x + r.x, l.y + r.y };
+}
+
 
 class Tilemap
 {
@@ -188,10 +193,17 @@ public:
 	{
 		return { floorf(positionOnScreen.x / tileSizeX),floorf(positionOnScreen.y / tileSizeY) };
 	}
-	bool IsTileTreversable()
+	bool IsTraversible(Vec2 tilePosition)
 	{
 		//checks if its inside tile map and if its a wall
-		return true;
+		if (IsInsideLevel(tilePosition))
+		{
+			if (GetTile(tilePosition.x, tilePosition.y) == Tile::Floor)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	int GetGridWidth();
@@ -201,14 +213,62 @@ public:
 		Tile tile = tilemap[x][y];
 		return tile;
 	}
-	void SetTile(int x, int y, Tile type);
+	void SetTile(int x, int y, Tile type)
+	{
+		tilemap[x][y] = type;
+	}
 	bool IsInsideGrid(int x, int y);
-	Vec2 TilePostoScreenPos(Vec2 tilePostion);
+	bool IsInsideLevel(Vec2 tilePosition)
+	{
+		if (tilePosition.x > (MAP_WIDTH * tileSizeX) || tilePosition.x < 0)
+		{
+			if (tilePosition.y > (MAP_HEIGHT * tileSizeY) || tilePosition.y < 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	Vec2 TilePostoScreenPos(Vec2 tilePostion)
+	{
+		return { (tilePostion.x * tileSizeX), (tilePostion.y * tileSizeY) };
+	}
 	Vec2 TilePosToScreenPos(float x, float y)
 	{
-		return { (x * MAP_WIDTH), (y * MAP_HEIGHT) };
+		return { (x * tileSizeX), (y * tileSizeY) };
 	}
-	Vec2 ScreenPostoTilePos(Vec2 positionOnScreen);
+	Vec2 ScreenPostoTilePos(Vec2 positionOnScreen)
+	{
+		return { (positionOnScreen.x / tileSizeX), (positionOnScreen.y / tileSizeY) };
+	}
+
+	std::vector<Vec2> GetTraversibleTilesAdjacentTo(Vec2 tilePos)
+	{
+		std::vector<Vec2> adjacentTilePositions;
+		//North, South, East, West
+		Vec2 N = tilePos + NORTH;
+		Vec2 S = tilePos + SOUTH;
+		Vec2 E = tilePos + EAST;
+		Vec2 W = tilePos + WEST;
+
+		if (IsTraversible(N))
+		{
+			adjacentTilePositions.push_back(N);
+		}
+		if (IsTraversible(S))
+		{
+			adjacentTilePositions.push_back(S);
+		}
+		if (IsTraversible(E))
+		{
+			adjacentTilePositions.push_back(E);
+		}
+		if (IsTraversible(W))
+		{
+			adjacentTilePositions.push_back(W);
+		}
+		return adjacentTilePositions;
+	}
 };
 //file:///C:/Users/capta/Downloads/AI_Lab_4.docx_1.pdf
 //add center function

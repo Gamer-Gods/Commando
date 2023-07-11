@@ -30,6 +30,8 @@ C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,34): warning C4838: conve
 C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,50): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
 C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,50): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(196,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(196,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\main.cpp(292,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\main.cpp(292,31): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\main.cpp(295,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
