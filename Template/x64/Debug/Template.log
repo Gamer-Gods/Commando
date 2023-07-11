@@ -1,2 +1,2 @@
 ﻿  main.cpp
-C:\Users\capta\source\repos\Commando\src\Sprite.h(2,10): fatal  error C1083: Cannot open include file: 'SDL_Image.h': No such file or directory
+D:\Courses\GAME1014\Commando\src\Sprite.h(2,10): fatal  error C1083: Cannot open include file: 'SDL_Image.h': No such file or directory

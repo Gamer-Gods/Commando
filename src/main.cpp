@@ -16,6 +16,7 @@
 #include <string>
 #include "Blaster.h"
 #include "Collision.h"
+#include "Tilemap.h"
 
 
 /*
@@ -46,8 +47,6 @@ Player player;
 // Enemy to copy
 Sprite enemyOriginal;
 
-
-Sprite background;
 Sprite planet;
 Sprite asteroid;
 std::vector<Blaster> playerBlasterContainer; //std::vector is a class which allows dynamic size. This is a dynamic array of Sprite
@@ -83,6 +82,9 @@ bool isLeftPressed = false;
 bool isRightPressed = false;
 bool isShootPressed = false;
 bool isDodgePressed = false;
+
+//Map
+Tilemap map;
 
 //Audio
 Mix_Chunk* LoadSound(const char* filePath)
@@ -275,12 +277,19 @@ void UpdatePlayer()
 {
 	//moves the sprites
 	Vec2 inputVector;
+	Vec2 playerTilePosition = map.ScreenPostoTilePos(player.sprite.position);
+	std::vector<Vec2> adjacentTilePositions = map.GetTraversibleTilesAdjacentTo(map.ScreenPostoTilePos(player.sprite.position));
+
 	if (isUpPressed)
 	{
 		inputVector.y = -1;
 		if (player.sprite.position.y < 0)
 		{
 			player.sprite.position.y = 0;
+		}
+		if (map.IsTraversible(playerTilePosition) == false)
+		{
+			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x, playerTilePosition.y + (float)1);
 		}
 	}
 
@@ -392,22 +401,24 @@ bool Init()
 }//keep
 void Load()
 {
+	//Level textures
+	map.LoadTextureForTile(Tile::Floor,"../Assets/textures/floor_tile.png",  pRenderer);
+	map.LoadTextureForTile(Tile::Walls,"../Assets/textures/wall_tile.png",  pRenderer);
+	map.LoadTextureForTile(Tile::Start, "../Assets/textures/start_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::Goals, "../Assets/textures/goal_tile.png", pRenderer);
+
 	//player textures
-	char* fileToLoad = "../Assets/textures/fighter.png";
+	char* fileToLoad = "../Assets/textures/player_texture.png";
 
 	player.sprite = Sprite(pRenderer, fileToLoad);
 
-	Vec2 shipSize = player.sprite.getSize();
+	Vec2 shipSize = { 30,30 };
 	int shipWidth = shipSize.x;
 	int shipHeight = shipSize.y;
 
 	//Describe location to paste to on the screen
 	player.sprite.setSize(shipWidth, shipHeight);
-	player.sprite.position = { (SCREEN_WIDTH / 2) - 50, 500 };
-
-	//background texture
-	background = Sprite(pRenderer, "../Assets/textures/stars.png");
-	background.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	player.sprite.position = map.TilePosToScreenPos(3,8);
 
 	//planet texture
 	planet = Sprite(pRenderer, "../Assets/textures/ring-planet.png");
@@ -620,13 +631,6 @@ void Update()
 		planet.position.y = -200;
 	}
 	//moves background
-	background.position.y += 0.5;
-	if (background.position.y >= SCREEN_HEIGHT)
-	{
-		background.position.y = -SCREEN_HEIGHT;
-
-	}
-	//moves background
 	asteroid.position.y += 1;
 	if (asteroid.position.y >= SCREEN_HEIGHT)
 	{
@@ -635,6 +639,7 @@ void Update()
 	}
 	RemoveOffscreenSprites();
 }//keep
+
 void Draw()
 {
 	if (loseGame == false)
@@ -644,10 +649,10 @@ void Draw()
 
 		// refreshes the frame so ship doesn't smear when it moves
 		SDL_RenderClear(pRenderer);
-		background.Draw(pRenderer);
+
 		planet.Draw(pRenderer);
 		asteroid.Draw(pRenderer);
-		player.sprite.Draw(pRenderer);
+		//player.sprite.Draw(pRenderer);
 
 		//draw all blasters on the screen
 		for (int i = 0; i < playerBlasterContainer.size(); i++)
@@ -694,7 +699,7 @@ void Draw()
 		shakeLevel = max(0, shakeLevel - deltaTime * shakeDecay);
 		//show the hidden space we were drawing to called the BackBuffer. 
 		//For more information why we use this, look up Double Buffering
-		SDL_RenderPresent(pRenderer);
+		
 	}
 	else
 	{
@@ -702,17 +707,16 @@ void Draw()
 		SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0);
 		// refreshes the frame so ship doesn't smear when it moves
 		SDL_RenderClear(pRenderer);
-		background.Draw(pRenderer);
 		planet.Draw(pRenderer);
 		uiSpriteLose.Draw(pRenderer);
-		SDL_RenderPresent(pRenderer);
+
 	}
-
-
+	map.Draw(pRenderer);
+	player.sprite.Draw(pRenderer);
+	SDL_RenderPresent(pRenderer);
 }//keep
 void Cleanup()
 {
-	background.Cleanup();
 	player.sprite.Cleanup();
 	//iterate through all sprites and call cleanup
 	for (auto blaster : playerBlasterContainer)

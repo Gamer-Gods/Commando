@@ -99,8 +99,9 @@ public:
 	{
 		if (dodgeImmuneTimer <= 0.0f)
 		{
-			return isDodging = false;
+			isDodging = false;
 		}
+		return isDodging;
 	}
 	void endDodge()
 	{
