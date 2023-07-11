@@ -24,31 +24,31 @@ C:\Users\capta\source\repos\Commando\src\Collision.h(23,27): warning C4101: 'max
 C:\Users\capta\source\repos\Commando\src\Collision.h(22,20): warning C4101: 'minBx': unreferenced local variable
 C:\Users\capta\source\repos\Commando\src\Tilemap.h(41,7): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Users\capta\source\repos\Commando\src\Tilemap.h(42,7): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(165,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(165,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,34): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,50): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(169,50): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(196,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\Tilemap.h(196,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(292,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(292,31): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(295,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(309,48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(309,33): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(312,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(409,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(410,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(583,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(589,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(595,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(623,26): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\capta\source\repos\Commando\src\main.cpp(653,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(659,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(182,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(182,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(186,34): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(186,34): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(186,50): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(186,50): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(213,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\Tilemap.h(213,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(299,47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(299,31): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(302,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(316,48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(316,33): warning C4244: 'initializing': conversion from 'float' to 'const int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(319,31): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(416,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(417,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(588,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(594,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(600,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(628,26): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\capta\source\repos\Commando\src\main.cpp(658,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\capta\source\repos\Commando\src\main.cpp(664,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\capta\source\repos\Commando\src\main.cpp(681,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\main.cpp(681,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\capta\source\repos\Commando\src\main.cpp(682,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-C:\Users\capta\source\repos\Commando\src\main.cpp(682,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(669,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\capta\source\repos\Commando\src\main.cpp(686,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\main.cpp(686,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\capta\source\repos\Commando\src\main.cpp(687,58): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+C:\Users\capta\source\repos\Commando\src\main.cpp(687,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Template.vcxproj -> C:\Users\capta\source\repos\Commando\bin\Debug\Template.exe

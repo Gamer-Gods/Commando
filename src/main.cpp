@@ -277,12 +277,19 @@ void UpdatePlayer()
 {
 	//moves the sprites
 	Vec2 inputVector;
+	Vec2 playerTilePosition = map.ScreenPostoTilePos(player.sprite.position);
+	std::vector<Vec2> adjacentTilePositions = map.GetTraversibleTilesAdjacentTo(map.ScreenPostoTilePos(player.sprite.position));
+
 	if (isUpPressed)
 	{
 		inputVector.y = -1;
 		if (player.sprite.position.y < 0)
 		{
 			player.sprite.position.y = 0;
+		}
+		if (map.IsTraversible(playerTilePosition) == false)
+		{
+			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x, playerTilePosition.y + (float)1);
 		}
 	}
 
@@ -405,15 +412,13 @@ void Load()
 
 	player.sprite = Sprite(pRenderer, fileToLoad);
 
-	Vec2 shipSize = { 40,40 };
+	Vec2 shipSize = { 30,30 };
 	int shipWidth = shipSize.x;
 	int shipHeight = shipSize.y;
 
 	//Describe location to paste to on the screen
 	player.sprite.setSize(shipWidth, shipHeight);
-	player.sprite.position = { (SCREEN_WIDTH / 2) - 50, 500 };
-
-	//background texture
+	player.sprite.position = map.TilePosToScreenPos(3,8);
 
 	//planet texture
 	planet = Sprite(pRenderer, "../Assets/textures/ring-planet.png");

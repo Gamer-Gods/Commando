@@ -84,7 +84,19 @@ Vec2 operator+(const Vec2& l, const Vec2& r)
 {
 	return { l.x + r.x, l.y + r.y };
 }
+Vec2 operator-(const Vec2& l, const Vec2& r)
+{
+	return { l.x - r.x, l.y - r.y };
+}
 
+bool operator!=(const Vec2& l, const Vec2& r)
+{
+	return l.x != r.x || l.y != r.y;
+}
+bool operator==(const Vec2& l, const Vec2& r)
+{
+	return l.x == r.x && l.y == r.y;
+}
 
 class Tilemap
 {
