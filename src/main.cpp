@@ -490,7 +490,7 @@ void Input()
 				Restart();
 				break;
 			}
-			case(SDL_SCANCODE_I):
+			case(SDL_SCANCODE_Q):
 			{
 				isDodgePressed = true;
 				break;
@@ -533,7 +533,7 @@ void Input()
 				isShootPressed = false;
 				break;
 			}
-			case(SDL_SCANCODE_I):
+			case(SDL_SCANCODE_Q):
 			{
 				isDodgePressed = false;
 				break;
