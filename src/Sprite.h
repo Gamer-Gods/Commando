@@ -104,6 +104,12 @@ public:
 		dst.y = position.y;
 		SDL_RenderCopyEx(renderer, pTexture, &src, &dst, rotation, NULL, flipState);
 	}
+	void Draw(SDL_Renderer* renderer, float rotation)
+	{
+		dst.x = position.x;
+		dst.y = position.y;
+		SDL_RenderCopyEx(renderer, pTexture, &src, &dst, rotation, NULL, flipState);
+	}
 
 	void Cleanup()
 	{

@@ -98,6 +98,15 @@ bool operator==(const Vec2& l, const Vec2& r)
 	return l.x == r.x && l.y == r.y;
 }
 
+Vec2 operator*(const Vec2& l, const int& r)
+{
+	return { l.x * r, l.y * r };
+}
+Vec2 operator/(const Vec2& l, const int& r)
+{
+	return { l.x / r, l.y / r };
+}
+
 class Tilemap
 {
 private:
@@ -210,9 +219,14 @@ public:
 		//checks if its inside tile map and if its a wall
 		if (IsInsideLevel(tilePosition))
 		{
-			if (GetTile(tilePosition.x, tilePosition.y) == Tile::Floor)
+			Tile Traverse = GetTile(tilePosition.x, tilePosition.y);
+			if (Traverse != Tile::Walls)
 			{
 				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 		return false;
@@ -225,6 +239,13 @@ public:
 		Tile tile = tilemap[x][y];
 		return tile;
 	}
+	Tile GetTile(Vec2 coords)
+	{
+		int x = coords.x;
+		int y = coords.y;
+		Tile tile = tilemap[x][y];
+		return tile;
+	}
 	void SetTile(int x, int y, Tile type)
 	{
 		tilemap[x][y] = type;
@@ -232,16 +253,16 @@ public:
 	bool IsInsideGrid(int x, int y);
 	bool IsInsideLevel(Vec2 tilePosition)
 	{
-		if (tilePosition.x > (MAP_WIDTH * tileSizeX) || tilePosition.x < 0)
+		if ((tilePosition.x < MAP_WIDTH) || (tilePosition.x > 0))
 		{
-			if (tilePosition.y > (MAP_HEIGHT * tileSizeY) || tilePosition.y < 0)
+			if (tilePosition.y < (MAP_HEIGHT) || tilePosition.y > 0)
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	Vec2 TilePostoScreenPos(Vec2 tilePostion)
+	Vec2 TilePosToScreenPos(Vec2 tilePostion)
 	{
 		return { (tilePostion.x * tileSizeX), (tilePostion.y * tileSizeY) };
 	}

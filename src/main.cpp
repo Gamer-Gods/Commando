@@ -43,6 +43,8 @@ float enemyStartSpawnTimer = 1.0f;
 
 //create new instances of struct Fund to load textures
 Player player;
+float rotation = 0;
+Vec2 shootVector;
 
 // Enemy to copy
 Sprite enemyOriginal;
@@ -114,7 +116,7 @@ void LoseGame()
 {
 	std::string loseGameString = "You Lose!! Press R to Restart";
 	SDL_Color color = { 255,255,255,255 };
-	uiSpriteLose = Sprite(uiLoseFont, loseGameString.c_str(), color,pRenderer);
+	uiSpriteLose = Sprite(uiLoseFont, loseGameString.c_str(), color, pRenderer);
 
 
 	uiSpriteLose.position.x = loseSpriteBasePosiiton.x;
@@ -146,23 +148,22 @@ void SpawnEnemy()
 	//Spawning at Random Position
 	enemy.position =
 	{
-		(float)(rand() % (SCREEN_WIDTH - (int)enemy.getSize().x)),
-		 (0)
+		map.TilePosToScreenPos(19,13)
 	};
 	enemy.flipState = SDL_FLIP_HORIZONTAL;
-	enemy.rotation = 270.0;
+	enemy.rotation = 90.0;
 
 	Player enemy1;
 	enemy1.sprite = enemy;
 
 	enemy1.fireRepeatDelay = 1.5;
-	enemy1.moveSpeedPx = 50;
+	enemy1.moveSpeedPx = 0;
 	enemy1.shipHealth = 1;
 	enemy1.RestShootCoodown();
 	//Add to enemy
 	enemyContainer.push_back(enemy1);
 	//reset timer
-	enemySpawnTimer = enemySpawnDelay;
+	enemySpawnTimer = enemySpawnDelay + 100;
 }
 //Collison
 bool IsOffScreen(Sprite sprite)
@@ -185,7 +186,7 @@ void CollisionDetection()
 			{
 				TakeHealth(1);
 			}
-				
+
 
 			//sound when player gets hit
 			Mix_PlayChannel(-1, sfxShipHit, 0);
@@ -278,11 +279,12 @@ void UpdatePlayer()
 	//moves the sprites
 	Vec2 inputVector;
 	Vec2 playerTilePosition = map.ScreenPostoTilePos(player.sprite.position);
-	std::vector<Vec2> adjacentTilePositions = map.GetTraversibleTilesAdjacentTo(map.ScreenPostoTilePos(player.sprite.position));
 
 	if (isUpPressed)
 	{
+		rotation = 0;
 		inputVector.y = -1;
+		shootVector = { 0,-1 };
 		if (player.sprite.position.y < 0)
 		{
 			player.sprite.position.y = 0;
@@ -295,28 +297,46 @@ void UpdatePlayer()
 
 	if (isDownPressed)
 	{
+		rotation = 180;
 		inputVector.y = 1;
+		shootVector = { 0,1 };
 		const int lowestPointScreen = SCREEN_HEIGHT - player.sprite.getSize().y;
 		if (player.sprite.position.y > lowestPointScreen)
 		{
 			player.sprite.position.y = lowestPointScreen;
 		}
+		if (map.IsTraversible(playerTilePosition) == false)
+		{
+			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x, playerTilePosition.y - (float)1);
+		}
 	}
 	if (isLeftPressed)
 	{
+		rotation = 270;
 		inputVector.x = -1;
+		shootVector = { -1,0 };
 		if (player.sprite.position.x < 0)
 		{
 			player.sprite.position.x = 0;
 		}
+		if (map.IsTraversible(playerTilePosition) == false)
+		{
+			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x + (float)1, playerTilePosition.y);
+		}
 	}
 	if (isRightPressed)
 	{
+		rotation = 90;
 		inputVector.x = 1;
+		shootVector = { 1,0 };
 		const int leftmostPointScreen = SCREEN_WIDTH - player.sprite.getSize().x;
 		if (player.sprite.position.x > leftmostPointScreen)
 		{
 			player.sprite.position.x = leftmostPointScreen;
+		}
+		if (map.IsTraversible(playerTilePosition) == false)
+		{
+			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x - (float)1, playerTilePosition.y);
 		}
 	}
 
@@ -324,14 +344,13 @@ void UpdatePlayer()
 	if (isShootPressed && player.CanShoot())
 	{
 		bool toUp = true;
-		Vec2 velocity{ 0, -1000 };
-		// Pass Blaster Container by referance to add blasts to the container specifically
-		player.Shoot(toUp, playerBlasterContainer, velocity, pRenderer);
 
+		// Pass Blaster Container by referance to add blasts to the container specifically
+		player.Shoot(toUp, playerBlasterContainer, shootVector, pRenderer);
 		//play shooting sound
 		Mix_PlayChannel(-1, sfxPlayerShoot, 0);
 	}
-	
+
 	if (isDodgePressed && player.CanDodge())
 	{
 		player.startDodge();
@@ -341,8 +360,13 @@ void UpdatePlayer()
 		player.endDodge();
 	}
 
-	player.Move(inputVector,deltaTime);
+	player.Move(inputVector, deltaTime);
 	player.Update(deltaTime);
+	if (map.GetTile(playerTilePosition) == Tile::Goals)
+	{
+		AddScore(100);
+		player.sprite.position = map.TilePosToScreenPos(3, 8);
+	}
 	//std::cout << player.sprite.position.y << std::endl;
 }
 
@@ -402,8 +426,8 @@ bool Init()
 void Load()
 {
 	//Level textures
-	map.LoadTextureForTile(Tile::Floor,"../Assets/textures/floor_tile.png",  pRenderer);
-	map.LoadTextureForTile(Tile::Walls,"../Assets/textures/wall_tile.png",  pRenderer);
+	map.LoadTextureForTile(Tile::Floor, "../Assets/textures/floor_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::Walls, "../Assets/textures/wall_tile.png", pRenderer);
 	map.LoadTextureForTile(Tile::Start, "../Assets/textures/start_tile.png", pRenderer);
 	map.LoadTextureForTile(Tile::Goals, "../Assets/textures/goal_tile.png", pRenderer);
 
@@ -418,7 +442,7 @@ void Load()
 
 	//Describe location to paste to on the screen
 	player.sprite.setSize(shipWidth, shipHeight);
-	player.sprite.position = map.TilePosToScreenPos(3,8);
+	player.sprite.position = map.TilePosToScreenPos(3, 8);
 
 	//planet texture
 	planet = Sprite(pRenderer, "../Assets/textures/ring-planet.png");
@@ -452,7 +476,7 @@ void Load()
 		std::cout << "Font failed to load: " << fileToLoad;
 	}
 
-	enemyOriginal = Sprite(pRenderer, "../Assets/textures/d7_small.png");
+	enemyOriginal = Sprite(pRenderer, "../Assets/textures/Circle.png");
 } //keep
 void Input()
 {
@@ -501,7 +525,7 @@ void Input()
 				Restart();
 				break;
 			}
-			case(SDL_SCANCODE_Q):
+			case(SDL_SCANCODE_I):
 			{
 				isDodgePressed = true;
 				break;
@@ -544,7 +568,7 @@ void Input()
 				isShootPressed = false;
 				break;
 			}
-			case(SDL_SCANCODE_Q):
+			case(SDL_SCANCODE_I):
 			{
 				isDodgePressed = false;
 				break;
@@ -607,7 +631,7 @@ void Update()
 		if (enemy.CanShoot())
 		{
 			bool towardUp = false;
-			Vec2 velocity = { 0,200 };
+			Vec2 velocity = { 0,-1 };
 			enemy.Shoot(towardUp, enemyBlasterContainer, velocity, pRenderer);
 		}
 	}
@@ -649,15 +673,12 @@ void Draw()
 
 		// refreshes the frame so ship doesn't smear when it moves
 		SDL_RenderClear(pRenderer);
-
-		planet.Draw(pRenderer);
-		asteroid.Draw(pRenderer);
-		//player.sprite.Draw(pRenderer);
-
+		map.Draw(pRenderer);
+		player.sprite.Draw(pRenderer, rotation);
 		//draw all blasters on the screen
 		for (int i = 0; i < playerBlasterContainer.size(); i++)
 		{
-			playerBlasterContainer[i].sprite.Draw(pRenderer);
+			playerBlasterContainer[i].sprite.Draw(pRenderer, rotation);
 		}
 
 		//draw enemy blasters
@@ -699,7 +720,7 @@ void Draw()
 		shakeLevel = max(0, shakeLevel - deltaTime * shakeDecay);
 		//show the hidden space we were drawing to called the BackBuffer. 
 		//For more information why we use this, look up Double Buffering
-		
+
 	}
 	else
 	{
@@ -709,10 +730,8 @@ void Draw()
 		SDL_RenderClear(pRenderer);
 		planet.Draw(pRenderer);
 		uiSpriteLose.Draw(pRenderer);
-
+		player.sprite.position = map.TilePosToScreenPos(3, 8);
 	}
-	map.Draw(pRenderer);
-	player.sprite.Draw(pRenderer);
 	SDL_RenderPresent(pRenderer);
 }//keep
 void Cleanup()

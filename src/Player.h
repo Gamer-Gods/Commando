@@ -13,7 +13,7 @@ public:
 	Sprite sprite;
 	float moveSpeedPx = 500;
 	float fireRepeatDelay = 0.5f;
-	float shipHealth = 10;
+	float shipHealth = 3;
 	float dodgeRepeatDelay = 1.0f;
 	bool isDodging = false;
 
@@ -44,15 +44,15 @@ public:
 		//Set up our blaster class instance
 		Blaster blaster;
 		blaster.sprite = blasterSprite;
-		blaster.velocity = velocity;
-
+		blaster.velocity.x = velocity.x * 1000;
+		blaster.velocity.y = velocity.y * 1000;
 		//add blaster to container
 		container.push_back(blaster);
 
 		//reset cooldown
 		RestShootCoodown();
 	}
-	void Move(Vec2 input,float deltaTime)
+	void Move(Vec2 input, float deltaTime)
 	{
 		sprite.position.x += input.x * (moveSpeedPx * deltaTime);
 		sprite.position.y += input.y * (moveSpeedPx * deltaTime);
