@@ -8,13 +8,13 @@
 #define MAP_WIDTH 30
 #define MAP_HEIGHT 15
 
-enum class Tile
+enum Tile
 {
-	Floor = 0,
-	Walls,
-	Trap,
-	Start,
-	Goals,
+	f = 0,
+	W,
+	T,
+	S,
+	G,
 	Count
 };
 const Vec2 NORTH = { 0,-1 };
@@ -107,6 +107,21 @@ Vec2 operator/(const Vec2& l, const int& r)
 	return { l.x / r, l.y / r };
 }
 
+Vec2 operator*(const Vec2& l, const float& r)
+{
+	return { l.x * r, l.y * r };
+}
+Vec2 operator/(const Vec2& l, const float& r)
+{
+	return { l.x / r, l.y / r };
+}
+
+Vec2 lerp(Vec2 a, Vec2 b, float t)
+{
+	return a * (1.0f - t) + b * t;
+}
+
+
 class Tilemap
 {
 private:
@@ -119,37 +134,37 @@ private:
 public:
 	int tileSizeX = 40;
 	int tileSizeY = 40;
-	Tile tilemap[MAP_WIDTH][MAP_HEIGHT] = {
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls },
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Start, Tile::Start, Tile::Start, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Start, Tile::Start, Tile::Start, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Walls, Tile::Walls, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Goals, Tile::Goals, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Floor, Tile::Floor, Tile::Goals, Tile::Goals, Tile::Walls},
-		{Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls, Tile::Walls},
+	int tilemap[MAP_WIDTH][MAP_HEIGHT] = {
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, S, S, S, W, W, W, W, W, W},
+		{W, W, W, W, W, W, S, S, S, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, f, f, f, f, W, W, W},
+		{W, W, W, W, W, W, f, f, f, f, f, f, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, f, f, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, f, f, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, f, f, W, W, W},
+		{W, W, W, W, W, W, W, W, W, W, f, f, G, G, W},
+		{W, W, W, W, W, W, W, W, W, W, f, f, G, G, W},
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
 	};
 	Tilemap()
 	{
@@ -160,12 +175,17 @@ public:
 				tiles[x][y] = GetTile(x, y);
 			}
 		}
-		//tiles[8][5] = Walls;
+		//tiles[8][5] = W;
 	}
 
 	void LoadTextureForTile(Tile tileType, const char* textureFilePath, SDL_Renderer* pRenderer)
 	{
-		tileTextures[(int)tileType] = IMG_LoadTexture(pRenderer, textureFilePath);
+		tileTextures[tileType] = IMG_LoadTexture(pRenderer, textureFilePath);
+
+		if (tileType)
+		{
+			std::cout << tileType;
+		}
 	}
 
 	void LoadLevelFromFile(const char* levelFilePath)
@@ -220,7 +240,7 @@ public:
 		if (IsInsideLevel(tilePosition))
 		{
 			Tile Traverse = GetTile(tilePosition.x, tilePosition.y);
-			if (Traverse != Tile::Walls)
+			if (Traverse != W)
 			{
 				return true;
 			}
@@ -236,14 +256,14 @@ public:
 	int GetGridHeight();
 	Tile GetTile(int x, int y)
 	{
-		Tile tile = tilemap[x][y];
+		Tile tile = (Tile)tilemap[x][y];
 		return tile;
 	}
 	Tile GetTile(Vec2 coords)
 	{
 		int x = coords.x;
 		int y = coords.y;
-		Tile tile = tilemap[x][y];
+		Tile tile = (Tile)tilemap[x][y];
 		return tile;
 	}
 	void SetTile(int x, int y, Tile type)
@@ -307,7 +327,7 @@ public:
 //add center function
 //player position on tilegrid
 //if player can be here
-//if (level.tiles[3][3] == Walls)
+//if (level.tiles[3][3] == W)
 //{
 //	
 //}

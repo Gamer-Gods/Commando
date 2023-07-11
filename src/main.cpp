@@ -273,6 +273,13 @@ void RemoveOffscreenSprites()
 
 	}
 }
+
+
+
+//Move input should request a new target position. If it's valid, set it as a target, remember the previous, mark that you are currently in transition with a timer
+//While in transition, lerp from the previous to the target over timer duration
+//After transition, player may request a new target again with movement keys
+
 //Player
 void UpdatePlayer()
 {
@@ -362,7 +369,7 @@ void UpdatePlayer()
 
 	player.Move(inputVector, deltaTime);
 	player.Update(deltaTime);
-	if (map.GetTile(playerTilePosition) == Tile::Goals)
+	if (map.GetTile(playerTilePosition) == Tile::G)
 	{
 		AddScore(100);
 		player.sprite.position = map.TilePosToScreenPos(3, 8);
@@ -426,10 +433,10 @@ bool Init()
 void Load()
 {
 	//Level textures
-	map.LoadTextureForTile(Tile::Floor, "../Assets/textures/floor_tile.png", pRenderer);
-	map.LoadTextureForTile(Tile::Walls, "../Assets/textures/wall_tile.png", pRenderer);
-	map.LoadTextureForTile(Tile::Start, "../Assets/textures/start_tile.png", pRenderer);
-	map.LoadTextureForTile(Tile::Goals, "../Assets/textures/goal_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::f, "../Assets/textures/floor_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::W, "../Assets/textures/wall_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::S, "../Assets/textures/start_tile.png", pRenderer);
+	map.LoadTextureForTile(Tile::G, "../Assets/textures/goal_tile.png", pRenderer);
 
 	//player textures
 	char* fileToLoad = "../Assets/textures/player_texture.png";
