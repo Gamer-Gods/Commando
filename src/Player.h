@@ -2,21 +2,22 @@
 #include "Blaster.h"
 #include <vector>
 
-
 class Player
 {
 private:
 	float fireRepeatTimer = 0.0f;
 	float dodgeImmuneTimer = 0.5f;
 	float dodgeRepeatTimer = 0.0f;
+	Vec2 goalPos;
 public:
 	Sprite sprite;
+	Vec2 playerDirection = { 0,0 };
+	Vec2 playerTilePosition;
 	float moveSpeedPx = 500;
 	float fireRepeatDelay = 0.5f;
 	float shipHealth = 3;
 	float dodgeRepeatDelay = 1.0f;
 	bool isDodging = false;
-
 
 	// Current Version only handles shooting up or down
 
@@ -58,6 +59,14 @@ public:
 		sprite.position.y += input.y * (moveSpeedPx * deltaTime);
 
 	}
+	void MoveLerp(Vec2 Pos, float lerpTime)
+	{
+		if (!isDodging)
+		{
+			goalPos = Pos;
+		}
+		sprite.position = lerp(sprite.position, goalPos, lerpTime);
+	}
 	void Update(float deltaTime)
 	{
 
@@ -91,7 +100,7 @@ public:
 	}
 	bool startDodge()
 	{
-		//moveSpeedPx = 2000;
+		goalPos = playerTilePosition + (playerDirection * 2.0f);
 		isDodging = true;
 		return isDodging;
 	}
@@ -106,7 +115,6 @@ public:
 	void endDodge()
 	{
 		dodgeImmuneTimer = 0.5f;
-		moveSpeedPx = 500;
 		ResetDodgeCooldown();
 	}
 };

@@ -29,7 +29,7 @@ constexpr float DELAY_TIME = 1000.0f / FPS; //target deltaTime in ms
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 600;
 float deltaTime = 1 / FPS; //time passing between frames in seconds
-
+float lerpTime = 0;
 SDL_Window* pWindow = nullptr; //pointer to SDL_Window. It stores a menory location which we can use later.
 SDL_Renderer* pRenderer = nullptr;
 bool isGameRunning = true;
@@ -87,6 +87,7 @@ bool isDodgePressed = false;
 
 //Map
 Tilemap map;
+Vec2 goalPos; 
 
 //Audio
 Mix_Chunk* LoadSound(const char* filePath)
@@ -284,69 +285,85 @@ void RemoveOffscreenSprites()
 void UpdatePlayer()
 {
 	//moves the sprites
-	Vec2 inputVector;
-	Vec2 playerTilePosition = map.ScreenPostoTilePos(player.sprite.position);
-
+	player.playerTilePosition = map.ScreenPostoTilePos(player.sprite.position);
+	
 	if (isUpPressed)
 	{
+		player.playerDirection = { 0,1 };
+		std::vector<Vec2> adjTrav = map.GetTraversibleTilesAdjacentTo(player.playerTilePosition);
 		rotation = 0;
-		inputVector.y = -1;
+		for (int vecIt = 0; vecIt != adjTrav.size(); vecIt++)
+		{
+			if (player.playerTilePosition + NORTH == adjTrav[vecIt])
+			{
+				goalPos = player.playerTilePosition + NORTH;
+			}
+		}
 		shootVector = { 0,-1 };
 		if (player.sprite.position.y < 0)
 		{
 			player.sprite.position.y = 0;
 		}
-		if (map.IsTraversible(playerTilePosition) == false)
-		{
-			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x, playerTilePosition.y + (float)1);
-		}
+		
 	}
 
 	if (isDownPressed)
 	{
+		player.playerDirection = { 0,-1 };
+		std::vector<Vec2> adjTrav = map.GetTraversibleTilesAdjacentTo(player.playerTilePosition);
 		rotation = 180;
-		inputVector.y = 1;
 		shootVector = { 0,1 };
 		const int lowestPointScreen = SCREEN_HEIGHT - player.sprite.getSize().y;
 		if (player.sprite.position.y > lowestPointScreen)
 		{
 			player.sprite.position.y = lowestPointScreen;
 		}
-		if (map.IsTraversible(playerTilePosition) == false)
+		for (int vecIt = 0; vecIt != adjTrav.size(); vecIt++)
 		{
-			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x, playerTilePosition.y - (float)1);
+			if (player.playerTilePosition + SOUTH == adjTrav[vecIt])
+			{
+				goalPos = player.playerTilePosition + SOUTH;
+			}
 		}
 	}
 	if (isLeftPressed)
 	{
+		player.playerDirection = { 1,0 };
+		std::vector<Vec2> adjTrav = map.GetTraversibleTilesAdjacentTo(player.playerTilePosition);
 		rotation = 270;
-		inputVector.x = -1;
 		shootVector = { -1,0 };
 		if (player.sprite.position.x < 0)
 		{
 			player.sprite.position.x = 0;
 		}
-		if (map.IsTraversible(playerTilePosition) == false)
+		for (int vecIt = 0; vecIt != adjTrav.size(); vecIt++)
 		{
-			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x + (float)1, playerTilePosition.y);
+			if (player.playerTilePosition + WEST == adjTrav[vecIt])
+			{
+				goalPos = player.playerTilePosition + WEST;
+			}
 		}
 	}
 	if (isRightPressed)
 	{
+		player.playerDirection = { -1,0 };
+		std::vector<Vec2> adjTrav = map.GetTraversibleTilesAdjacentTo(player.playerTilePosition);
 		rotation = 90;
-		inputVector.x = 1;
 		shootVector = { 1,0 };
 		const int leftmostPointScreen = SCREEN_WIDTH - player.sprite.getSize().x;
 		if (player.sprite.position.x > leftmostPointScreen)
 		{
 			player.sprite.position.x = leftmostPointScreen;
 		}
-		if (map.IsTraversible(playerTilePosition) == false)
+		for (int vecIt = 0; vecIt != adjTrav.size(); vecIt++)
 		{
-			player.sprite.position = map.TilePosToScreenPos(playerTilePosition.x - (float)1, playerTilePosition.y);
+			if (player.playerTilePosition + EAST == adjTrav[vecIt])
+			{
+				goalPos = player.playerTilePosition + EAST;
+			}
 		}
 	}
-
+	
 	//if shooting and our shooting is off cooldown
 	if (isShootPressed && player.CanShoot())
 	{
@@ -367,9 +384,13 @@ void UpdatePlayer()
 		player.endDodge();
 	}
 
-	player.Move(inputVector, deltaTime);
+	//player movement
+	lerpTime = normalize(deltaTime,0,1);
+	goalPos = map.TilePosToScreenPos(goalPos);
+	player.MoveLerp(goalPos, lerpTime);
+	goalPos = map.ScreenPostoTilePos(goalPos);
 	player.Update(deltaTime);
-	if (map.GetTile(playerTilePosition) == Tile::G)
+	if (map.GetTile(player.playerTilePosition) == Tile::G)
 	{
 		AddScore(100);
 		player.sprite.position = map.TilePosToScreenPos(3, 8);
@@ -450,6 +471,8 @@ void Load()
 	//Describe location to paste to on the screen
 	player.sprite.setSize(shipWidth, shipHeight);
 	player.sprite.position = map.TilePosToScreenPos(3, 8);
+	//Intializing Lerp Movement
+	goalPos = map.ScreenPostoTilePos(player.sprite.position);
 
 	//planet texture
 	planet = Sprite(pRenderer, "../Assets/textures/ring-planet.png");
@@ -812,7 +835,6 @@ int main(int argc, char* args[])
 
 		// delta time
 		deltaTime = (static_cast<float>(SDL_GetTicks()) - frame_start) / 1000.0f;
-
 
 	}
 

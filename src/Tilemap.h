@@ -79,49 +79,6 @@ TileCoord operator/(const TileCoord& l, const int& r)
 	return { l.x / r, l.y / r };
 }
 
-
-Vec2 operator+(const Vec2& l, const Vec2& r)
-{
-	return { l.x + r.x, l.y + r.y };
-}
-Vec2 operator-(const Vec2& l, const Vec2& r)
-{
-	return { l.x - r.x, l.y - r.y };
-}
-
-bool operator!=(const Vec2& l, const Vec2& r)
-{
-	return l.x != r.x || l.y != r.y;
-}
-bool operator==(const Vec2& l, const Vec2& r)
-{
-	return l.x == r.x && l.y == r.y;
-}
-
-Vec2 operator*(const Vec2& l, const int& r)
-{
-	return { l.x * r, l.y * r };
-}
-Vec2 operator/(const Vec2& l, const int& r)
-{
-	return { l.x / r, l.y / r };
-}
-
-Vec2 operator*(const Vec2& l, const float& r)
-{
-	return { l.x * r, l.y * r };
-}
-Vec2 operator/(const Vec2& l, const float& r)
-{
-	return { l.x / r, l.y / r };
-}
-
-Vec2 lerp(Vec2 a, Vec2 b, float t)
-{
-	return a * (1.0f - t) + b * t;
-}
-
-
 class Tilemap
 {
 private:
@@ -135,6 +92,38 @@ public:
 	int tileSizeX = 40;
 	int tileSizeY = 40;
 	int tilemap[MAP_WIDTH][MAP_HEIGHT] = {
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, W, W, W, S, S, S, S, W, W, W, W, W, W},
+		{W, W, W, W, W, S, S, S, S, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, f, f, f, f, W, W, W},
+		{W, W, W, W, W, W, f, f, f, f, f, f, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, W, W, W, W, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, W, W, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, W, W, W, W, W},
+		{W, W, f, f, f, f, f, f, f, f, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, f, f, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, W, W, W, W, W, W, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, f, f, W, W, W},
+		{W, W, f, f, f, f, f, f, W, W, f, f, W, W, W},
+		{W, W, W, W, W, W, W, W, W, W, f, f, G, G, W},
+		{W, W, W, W, W, W, W, W, W, W, f, f, G, G, W},
+		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
+	};
+	int tilemap2[MAP_WIDTH][MAP_HEIGHT] = {
 		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
 		{W, W, W, W, W, W, W, W, W, W, W, W, W, W, W},
 		{W, W, W, W, W, W, S, S, S, W, W, W, W, W, W},
@@ -321,6 +310,10 @@ public:
 			adjacentTilePositions.push_back(W);
 		}
 		return adjacentTilePositions;
+	}
+	Vec2 getVecFromVector(std::vector<Vec2> adjacentTilePositions,Vec2 direction)
+	{ 
+
 	}
 };
 //file:///C:/Users/capta/Downloads/AI_Lab_4.docx_1.pdf
